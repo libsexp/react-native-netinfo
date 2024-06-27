@@ -26,6 +26,7 @@ public class NetInfoModule extends ReactContextBaseJavaModule implements AmazonF
 
     public NetInfoModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        reactContext.addLifecycleEventListener(this);
         // Create the connectivity receiver based on the API level we are running on
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mConnectivityReceiver = new NetworkCallbackConnectivityReceiver(reactContext);
