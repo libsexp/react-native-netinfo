@@ -7,6 +7,7 @@
 package com.reactnativecommunity.netinfo;
 
 import android.os.Build;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -15,7 +16,7 @@ import com.facebook.react.module.annotations.ReactModule;
 
 /** Module that monitors and provides information about the connectivity state of the device. */
 @ReactModule(name = NetInfoModule.NAME)
-public class NetInfoModule extends ReactContextBaseJavaModule implements AmazonFireDeviceConnectivityPoller.ConnectivityChangedCallback {
+public class NetInfoModule extends ReactContextBaseJavaModule implements AmazonFireDeviceConnectivityPoller.ConnectivityChangedCallback, LifecycleEventListener {
     public static final String NAME = "RNCNetInfo";
 
     private final ConnectivityReceiver mConnectivityReceiver;
@@ -39,13 +40,6 @@ public class NetInfoModule extends ReactContextBaseJavaModule implements AmazonF
     public void initialize() {
         mConnectivityReceiver.register();
         mAmazonConnectivityChecker.register();
-    }
-
-    @Override
-    public void onCatalystInstanceDestroy() {
-        mAmazonConnectivityChecker.unregister();
-        mConnectivityReceiver.unregister();
-        mConnectivityReceiver.hasListener = false;
     }
 
     @Override
@@ -75,5 +69,22 @@ public class NetInfoModule extends ReactContextBaseJavaModule implements AmazonF
         if (numberOfListeners == 0) {
             mConnectivityReceiver.hasListener = false;
         }
+    }
+
+    @Override
+    public void onHostResume() {
+
+    }
+
+    @Override
+    public void onHostPause() {
+
+    }
+
+    @Override
+    public void onHostDestroy() {
+        mAmazonConnectivityChecker.unregister();
+        mConnectivityReceiver.unregister();
+        mConnectivityReceiver.hasListener = false;
     }
 }
